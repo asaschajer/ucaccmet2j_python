@@ -1,5 +1,7 @@
 import json
 
+precipitation = {}
+
 with open('precipitation.json') as file:
     data = json.load(file)
     
@@ -33,3 +35,14 @@ with open('precipitation.json') as file:
             total_monthly_precipitation[month] += value['value']
 
     print(total_monthly_precipitation)
+
+    import json   
+    precipitation['Seattle'] = {
+        'station': 'GHCND:US1WAKG0038',
+        'state': 'WA',
+        'total_monthly_precipitation': total_monthly_precipitation
+    }
+
+#write the result output
+with open('results.json', 'w', encoding='utf-8') as file:
+    json.dump(precipitation, file, indent=4)
