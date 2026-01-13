@@ -33,8 +33,22 @@ with open('precipitation.json') as file:
         if month not in total_monthly_precipitation:
             total_monthly_precipitation[month] = 0
             total_monthly_precipitation[month] += value['value']
-
+        else:
+            total_monthly_precipitation[month] += value['value']
     print(total_monthly_precipitation)
+
+    values_list = list(total_monthly_precipitation.values())
+    total_yearly_precipitation = 0
+    for monthly_precipitation in values_list:
+        total_yearly_precipitation = total_yearly_precipitation + monthly_precipitation
+    print(total_yearly_precipitation)
+
+    relative_monthly_precipitation = {}
+    for month in total_monthly_precipitation:
+        result_relative_monthly_pre = total_monthly_precipitation[month]/total_yearly_precipitation
+        relative_monthly_precipitation[month] = result_relative_monthly_pre
+    print(relative_monthly_precipitation)
+
 
     import json   
     precipitation['Seattle'] = {
