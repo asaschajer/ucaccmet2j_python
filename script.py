@@ -13,7 +13,7 @@ with open('precipitation.json') as file:
             seattle_data.append(measurement)
     # print(seattle_data)
 
-
+    #splitting the date to get measurements based on the month
     splitted_date = []
     for measurement in seattle_data:
         measurement['date'].split('-')[1]
@@ -57,8 +57,9 @@ with open('precipitation.json') as file:
     precipitation['Seattle'] = {
         'station': 'GHCND:US1WAKG0038',
         'state': 'WA',
-        'total_monthly_precipitation': total_monthly_precipitation,
-        'relative_monthly_precipitation': relative_monthly_precipitation
+        'total_monthly_precipitation': list(total_monthly_precipitation.values()),
+        'total_yearly_precipitation': total_yearly_precipitation,
+        'relative_monthly_precipitation': list(relative_monthly_precipitation.values())
     }
 
 #write the result output

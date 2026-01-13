@@ -2,6 +2,7 @@ import json
 
 precipitation = {}
 
+# calculate the total precipitation for the 4 cities together
 with open('precipitation.json') as file:
     data = json.load(file)
     overall_yearly_precipitation = 0
@@ -10,14 +11,12 @@ with open('precipitation.json') as file:
     print(overall_yearly_precipitation) 
 
 
-# station_codes = ['GHCND:USW00093814','GHCND:US1WAKG0038','GHCND:USC00513317','GHCND:US1CASD0032']
-
 with open('stations.csv') as file:
     lines = file.readlines()
     print(lines)
     lines.pop(0)
     for line in lines:
-        station_info = line.strip().split(',')
+        station_info = line.strip().split(',') #separating the list per station
         print(station_info)
         code = station_info[2]
         city = station_info[0]
@@ -25,15 +24,15 @@ with open('stations.csv') as file:
         with open('precipitation.json') as file:
             data = json.load(file)
             
-            #Filtering to keep only the data from seattle
+            #Filtering to keep only the data from the station studied
             station_data = []
             
             for measurement in data:
                 if measurement['station'] == code:
                     station_data.append(measurement)
-            # print(seattle_data)
+            # print(station_data)
 
-
+            #splitting the date to get measurements based on the month
             splitted_date = []
             for measurement in station_data:
                 measurement['date'].split('-')[1]
@@ -88,6 +87,6 @@ with open('stations.csv') as file:
                 'relative_yearly_precipitation': relative_yearly_precipitation
             }
 
-#write the result output
+#write the result output in JSON
 with open('results.json', 'w', encoding='utf-8') as file:
     json.dump(precipitation, file, indent=4)
