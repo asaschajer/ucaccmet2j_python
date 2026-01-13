@@ -2,6 +2,14 @@ import json
 
 precipitation = {}
 
+with open('precipitation.json') as file:
+    data = json.load(file)
+    overall_yearly_precipitation = 0
+    for value in data:
+        overall_yearly_precipitation = overall_yearly_precipitation + value['value']
+    print(overall_yearly_precipitation) 
+
+
 # station_codes = ['GHCND:USW00093814','GHCND:US1WAKG0038','GHCND:USC00513317','GHCND:US1CASD0032']
 
 with open('stations.csv') as file:
@@ -64,13 +72,20 @@ with open('stations.csv') as file:
                 relative_monthly_precipitation[month] = result_relative_monthly_pre
             print(relative_monthly_precipitation)
 
+            #calculate the relative yearly precipitation
+            relative_yearly_precipitation = 0
+            for month in total_monthly_precipitation:
+                relative_yearly_precipitation = total_yearly_precipitation/overall_yearly_precipitation
+            print(relative_yearly_precipitation)
 
             import json   
             precipitation[city] = {
                 'station': code,
                 'state': state,
                 'total_monthly_precipitation': list(total_monthly_precipitation.values()),
-                'relative_monthly_precipitation': list(relative_monthly_precipitation.values())
+                'total_yearly_precipitation': total_yearly_precipitation,
+                'relative_monthly_precipitation': list(relative_monthly_precipitation.values()),
+                'relative_yearly_precipitation': relative_yearly_precipitation
             }
 
 #write the result output
