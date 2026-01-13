@@ -9,13 +9,13 @@ with open('precipitation.json') as file:
     for measurement in data:
         if measurement['station'] == 'GHCND:US1WAKG0038':
             seattle_data.append(measurement)
-    print(seattle_data)
+    # print(seattle_data)
 
 
     splitted_date = []
     for measurement in seattle_data:
+        measurement['date'].split('-')[1]
         split_by_month = measurement['date'].split('-')[1]
-        splitted_date.append(split_by_month)
 
         new_dic={
             'month': split_by_month,
@@ -23,13 +23,13 @@ with open('precipitation.json') as file:
         }
         splitted_date.append(new_dic)
 
-    print(splitted_date)
+    # print(splitted_date)
 
-    # grouped_months = {}
-    # for date in splitted_date:
-    #     month = date['month']
-    #     if month not in grouped_months:
-    #         grouped_months[month] = []
-    #     grouped_months[month].append(splitted_date)
-    #     print(grouped_months)
+    total_monthly_precipitation = {}
+    for value in splitted_date:
+        month = value['month']
+        if month not in total_monthly_precipitation:
+            total_monthly_precipitation[month] = 0
+            total_monthly_precipitation[month] += value['value']
 
+    print(total_monthly_precipitation)
