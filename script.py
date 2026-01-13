@@ -26,7 +26,8 @@ with open('precipitation.json') as file:
         splitted_date.append(new_dic)
 
     # print(splitted_date)
-
+    
+    # calculate the total monthly precipitation 
     total_monthly_precipitation = {}
     for value in splitted_date:
         month = value['month']
@@ -37,12 +38,14 @@ with open('precipitation.json') as file:
             total_monthly_precipitation[month] += value['value']
     print(total_monthly_precipitation)
 
+    # calculate the total yearly precipitation
     values_list = list(total_monthly_precipitation.values())
     total_yearly_precipitation = 0
     for monthly_precipitation in values_list:
         total_yearly_precipitation = total_yearly_precipitation + monthly_precipitation
     print(total_yearly_precipitation)
 
+    #calculate the relative monthly precipitation
     relative_monthly_precipitation = {}
     for month in total_monthly_precipitation:
         result_relative_monthly_pre = total_monthly_precipitation[month]/total_yearly_precipitation
@@ -59,5 +62,5 @@ with open('precipitation.json') as file:
     }
 
 #write the result output
-with open('results.json', 'w', encoding='utf-8') as file:
+with open('results_seattle.json', 'w', encoding='utf-8') as file:
     json.dump(precipitation, file, indent=4)
