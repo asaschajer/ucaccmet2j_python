@@ -44,7 +44,7 @@ with open('stations.csv') as file:
                 }
                 splitted_date.append(new_dic)
 
-            # print(splitted_date)
+            #print(splitted_date)
             
             # calculate the total monthly precipitation 
             total_monthly_precipitation = {}
