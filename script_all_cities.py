@@ -2,68 +2,77 @@ import json
 
 precipitation = {}
 
-station_codes = ['GHCND:USW00093814','GHCND:US1WAKG0038','GHCND:USC00513317','GHCND:US1CASD0032']
+# station_codes = ['GHCND:USW00093814','GHCND:US1WAKG0038','GHCND:USC00513317','GHCND:US1CASD0032']
 
-for station in station_codes:
-    with open('precipitation.json') as file:
-        data = json.load(file)
-        
-        #Filtering to keep only the data from seattle
-        station_data = []
-        
-        for measurement in data:
-            if measurement['station'] == station:
-                station_data.append(measurement)
-        # print(seattle_data)
+with open('stations.csv') as file:
+    lines = file.readlines()
+    print(lines)
+    lines.pop(0)
+    for line in lines:
+        station_info = line.strip().split(',')
+        print(station_info)
+        code = station_info[2]
+        city = station_info[0]
+        state = station_info[1]
+        with open('precipitation.json') as file:
+            data = json.load(file)
+            
+            #Filtering to keep only the data from seattle
+            station_data = []
+            
+            for measurement in data:
+                if measurement['station'] == code:
+                    station_data.append(measurement)
+            # print(seattle_data)
 
 
-        splitted_date = []
-        for measurement in station_data:
-            measurement['date'].split('-')[1]
-            split_by_month = measurement['date'].split('-')[1]
+            splitted_date = []
+            for measurement in station_data:
+                measurement['date'].split('-')[1]
+                split_by_month = measurement['date'].split('-')[1]
 
-            new_dic={
-                'month': split_by_month,
-                'value': measurement['value']
+                new_dic={
+                    'month': split_by_month,
+                    'value': measurement['value']
+                }
+                splitted_date.append(new_dic)
+
+            # print(splitted_date)
+            
+            # calculate the total monthly precipitation 
+            total_monthly_precipitation = {}
+            for value in splitted_date:
+                month = value['month']
+                if month not in total_monthly_precipitation:
+                    total_monthly_precipitation[month] = 0
+                    total_monthly_precipitation[month] += value['value']
+                else:
+                    total_monthly_precipitation[month] += value['value']
+            print(total_monthly_precipitation)
+
+            # calculate the total yearly precipitation
+            values_list = list(total_monthly_precipitation.values())
+            total_yearly_precipitation = 0
+            for monthly_precipitation in values_list:
+                total_yearly_precipitation = total_yearly_precipitation + monthly_precipitation
+            print(total_yearly_precipitation)
+
+            #calculate the relative monthly precipitation
+            relative_monthly_precipitation = {}
+            for month in total_monthly_precipitation:
+                result_relative_monthly_pre = total_monthly_precipitation[month]/total_yearly_precipitation
+                relative_monthly_precipitation[month] = result_relative_monthly_pre
+            print(relative_monthly_precipitation)
+
+
+            import json   
+            precipitation[city] = {
+                'station': code,
+                'state': state,
+                'total_monthly_precipitation': list(total_monthly_precipitation.values()),
+                'relative_monthly_precipitation': list(relative_monthly_precipitation.values())
             }
-            splitted_date.append(new_dic)
-
-        # print(splitted_date)
-        
-        # calculate the total monthly precipitation 
-        total_monthly_precipitation = {}
-        for value in splitted_date:
-            month = value['month']
-            if month not in total_monthly_precipitation:
-                total_monthly_precipitation[month] = 0
-                total_monthly_precipitation[month] += value['value']
-            else:
-                total_monthly_precipitation[month] += value['value']
-        print(total_monthly_precipitation)
-
-        # calculate the total yearly precipitation
-        values_list = list(total_monthly_precipitation.values())
-        total_yearly_precipitation = 0
-        for monthly_precipitation in values_list:
-            total_yearly_precipitation = total_yearly_precipitation + monthly_precipitation
-        print(total_yearly_precipitation)
-
-        #calculate the relative monthly precipitation
-        relative_monthly_precipitation = {}
-        for month in total_monthly_precipitation:
-            result_relative_monthly_pre = total_monthly_precipitation[month]/total_yearly_precipitation
-            relative_monthly_precipitation[month] = result_relative_monthly_pre
-        print(relative_monthly_precipitation)
-
-
-        import json   
-        precipitation['Seattle'] = {
-            'station': station_codes,
-            'state': 'WA',
-            'total_monthly_precipitation': total_monthly_precipitation,
-            'relative_monthly_precipitation': relative_monthly_precipitation
-        }
 
 #write the result output
-with open('results_seattle.json', 'w', encoding='utf-8') as file:
+with open('results.json', 'w', encoding='utf-8') as file:
     json.dump(precipitation, file, indent=4)
